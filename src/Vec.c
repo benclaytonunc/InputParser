@@ -54,9 +54,21 @@ void Vec_get(const Vec *self, size_t index, void *out) {
         exit(EXIT_FAILURE);
     }   
 }
+static void _ensure_capacity(Vec *self, size_t n) {
+    if (n > self->capacity) {
+        size_t new_capacity = n * 2;
+        self->buffer = realloc(self->buffer, new_capacity * self-> item_size);
+        OOM_GUARD(self->buffer, __FILE__, __LINE__);
+    }
+}
+
 void Vec_set(Vec *self, size_t index, const void *value) {
+    _ensure_capacity(self, index + 1);
+    if (index >= self->length) {
+        self->length = index + 1;
+    }
     if (index < self->length && index >= 0) {
-        memcpy(Vec_ref(self,index),value, self->item_size);
+        memcpy(Vec_ref(self,index),value, (self->item_size));
     } else {
         fprintf(stderr, "%s:%d - Out of Bounds", __FILE__, __LINE__);
         exit(EXIT_FAILURE);
@@ -89,25 +101,29 @@ void Vec_splice(Vec *self, size_t index, size_t delete_count, const void *items,
     }
     size_t endLength = self->length + insert_count - delete_count;
     char * temp = (char *) self->buffer;
-
+/*
     if (delete_count > 0) {
         for (size_t i = index; i < (index + delete_count); i++) {
-            char * empty = NULL;
-            Vec_set(self, i, empty);
+            // char * empty = NULL;
+            memcpy(&self[i], NULL, self->item_size);
+            //Vec_set(self, i, empty);
         }
     }
-
-    self = realloc(self, endLength * self->item_size);
+*/
+    self = malloc(endLength * self->item_size);
     if(insert_count > 0) {
         int j = 0;
         for (size_t i = index; i < (index + insert_count); i++) {
-            Vec_set(self, i, &items[j]);
+            memcpy(&self[i], &items[j], sizeof(self->item_size)); 
+            // Vec_set(self, i, &items[j]);
             j++;
         }
     }
     int k = index + delete_count;
     for (size_t i = index+insert_count; i < endLength; i++) {
-        Vec_set(self, i, &temp[k]);
+        memcpy(&self[i], &temp[k], self->item_size);
         k++;
     }
+    
+//    
 }
