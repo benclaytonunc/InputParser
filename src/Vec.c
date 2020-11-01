@@ -95,31 +95,16 @@ bool Vec_equals(const Vec *self, const Vec *other) {
 
 void Vec_splice(Vec *self, size_t index, size_t delete_count, const void *items, size_t insert_count) {
     size_t ogLength = self->length;
-    if (index >= ogLength || index < 0 || delete_count < 0 || insert_count < 0) {
+    if (index > ogLength || index < 0 || delete_count < 0 || insert_count < 0) {
         fprintf(stderr, "%s:%d - Out of Bounds", __FILE__, __LINE__);
         exit(EXIT_FAILURE);
     }
         
     self->length = self->length + insert_count - delete_count;
     _ensure_capacity(self, index + insert_count);
-    size_t checker = ogLength - index - delete_count;
-    /*
-    if (delete_count > 0) {
-        for (size_t i = index; i < (index + delete_count); i++) {
-            // char * empty = NULL;
-            memcpy(&self[i], NULL, self->item_size);
-            //Vec_set(self, i, empty);
-        }
-    }
-*/
-//    self = malloc(endLength * self->item_size);
+    size_t checker = ogLength - index - delete_count; // makes sure the
     if(checker > 0) {
         
-        //for (size_t i = index; i < (index + insert_count); i++) {
-          //  memcpy(&self[i], &items[j], self->item_size); 
-            // Vec_set(self, i, &items[j]);
-            //j++;
-        //}
         memcpy(Vec_ref(self, index + insert_count),Vec_ref(self,(index + delete_count)),(checker)*self->item_size);
     }
     memcpy(Vec_ref(self, index), items, self->item_size * insert_count);   
