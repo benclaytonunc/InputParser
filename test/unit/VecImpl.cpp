@@ -110,30 +110,30 @@ TEST(VecImpl, set2) {
     ASSERT_EQ(Vec_equals(&v, &w), true);
 
 }
-/*
+
 TEST(VecImpl, splice1) {
     Vec v = Vec_value(4, sizeof(int16_t));
     int16_t *buffer = (int16_t*) v.buffer;
     buffer[0] = 100;
     buffer[1] = 200;
     buffer[2] = 300;
-    buffer[3] = 400;
+    
     v.length = 4;
-    int16_t *items = (int16_t*)v.buffer;
-    items[0] = 800;
-    items[1] = 900;
+    int16_t items[] = {800,900};
+    Vec_splice(&v, 0, 0, items, 2);
+    int16_t *bufferAgain = (int16_t*) v.buffer;
     Vec fin = Vec_value(5, sizeof(int16_t));
     int16_t *result = (int16_t*)fin.buffer;
-    result[0] = 100;
-    result[1] = 200;
-    result[2] = 800;
-    result[3] = 900;
-    result[4] = 400; 
-    Vec_splice(&v, 2, 1, items, 2);
-    ASSERT_EQ(&v, &fin); 
-} */
-TEST(VecImpl, fakeSplice) {
-    bool f = true;
+    result[0] = 800;
+    result[1] = 900;
+    result[2] = 100;
+    result[3] = 200;
+    result[4] = 300; 
     
-    ASSERT_EQ(f, true);
+    ASSERT_EQ(bufferAgain[0], result[0]);
+    ASSERT_EQ(bufferAgain[1], result[1]);
+    ASSERT_EQ(bufferAgain[2], result[2]);
+    ASSERT_EQ(bufferAgain[3], result[3]);
+    ASSERT_EQ(bufferAgain[4], result[4]);
 }
+
