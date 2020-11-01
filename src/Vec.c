@@ -114,7 +114,7 @@ void Vec_splice(Vec *self, size_t index, size_t delete_count, const void *items,
     if(insert_count > 0) {
         int j = 0;
         for (size_t i = index; i < (index + insert_count); i++) {
-            memcpy(&self[i], &items[j], sizeof(self->item_size)); 
+            memcpy(&self[i], &items[j], self->item_size); 
             // Vec_set(self, i, &items[j]);
             j++;
         }
