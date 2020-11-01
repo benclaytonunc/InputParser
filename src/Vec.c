@@ -64,10 +64,10 @@ static void _ensure_capacity(Vec *self, size_t n) {
 
 void Vec_set(Vec *self, size_t index, const void *value) {
     _ensure_capacity(self, index + 1);
-    if (index >= self->length) {
+    if (index == self->length) {
         self->length = index + 1;
     }
-    if (index < self->length && index >= 0) {
+    if (index <= self->length && index >= 0) {
         memcpy(Vec_ref(self,index),value, (self->item_size));
     } else {
         fprintf(stderr, "%s:%d - Out of Bounds", __FILE__, __LINE__);
