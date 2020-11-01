@@ -92,7 +92,10 @@ bool Vec_equals(const Vec *self, const Vec *other) {
     return false;
 
 }
-
+void* new_ref(const Vec *self, size_t index)
+{
+        return self->buffer + (index * self->item_size);
+}
 void Vec_splice(Vec *self, size_t index, size_t delete_count, const void *items, size_t insert_count) {
     size_t ogLength = self->length;
     if (index > ogLength || index < 0 || delete_count < 0 || insert_count < 0) {
@@ -103,10 +106,15 @@ void Vec_splice(Vec *self, size_t index, size_t delete_count, const void *items,
     self->length = self->length + insert_count - delete_count;
     _ensure_capacity(self, index + insert_count);
     size_t checker = ogLength - index - delete_count; // makes sure the
+    
     if(checker > 0) {
-        
-        memcpy(Vec_ref(self, index + insert_count),Vec_ref(self,(index + delete_count)),(checker)*self->item_size);
+            
+        memcpy(new_ref(self, index + insert_count),new_ref(self,(index + delete_count)),(checker)*self->item_size);
     }
-    memcpy(Vec_ref(self, index), items, self->item_size * insert_count);   
+    memcpy(new_ref(self, index), items, self->item_size * insert_count);   
 //    
+
+
+
 }
+
