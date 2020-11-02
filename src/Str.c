@@ -13,7 +13,7 @@ Str Str_value(size_t capacity)
     s.length = 1;
     char *buffer = (char*) s.buffer;
     buffer[0] = NULL_CHAR;
-    // Vec_set(&s, 0, &NULL_CHAR);
+    Vec_set(&s, 0, &NULL_CHAR);
     return s;
 }
 
@@ -35,4 +35,26 @@ const char* Str_cstr(const Str *self)
 char* Str_ref(const Str *self, const size_t index)
 {
     return (char*) Vec_ref(self, index);
+}
+Str Str_from(const char *cstr) {
+   //char* newStr = malloc(sizeof(cstr));
+   //Str s = Str_value(sizeof(cstr));
+   /*int i = 0;   
+   while (cstr != '\0') {
+       s.buffer += cstr[i];
+       cstr++;
+       i++;
+   }
+   */
+   size_t b = strlen(cstr);
+    Str s = Str_value(b+1);
+   Vec_splice(&s, 0, 0, cstr, b);  
+   //memcpy(Str_ref(s, 0), (const void *)cstr, sizeof(cstr));
+   return s;
+}
+
+void Str_splice(Str *self, size_t index, size_t delete_count, const char *cstr, size_t insert_count) {   
+
+    Vec_splice(self, index, delete_count, cstr, insert_count);          
+    Vec_set(self, self->length, &NULL_CHAR);      
 }

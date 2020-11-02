@@ -5,6 +5,7 @@ extern "C" {
 #include "string.h"
 }
 
+
 TEST(StrImpl, value) {
     Str s = Str_value(2);
     ASSERT_EQ(1, s.length); // Vec's length includes null char
@@ -64,4 +65,38 @@ TEST(StrImpl, ref) {
     Str_drop(&s);
 }
 
-// TODO: Test remaining Str functions
+TEST(StrImpl, fromTest) {
+    //const char *t[] = {"a","b","c","d"};
+
+    //char v[] = "abcd";
+    Str v = fixture_abcd();
+    Str u = Str_from("abcd"); 
+    char *buffer = (char*) u.buffer;
+    char *buffer2 = (char*) v.buffer;
+    //for (size_t i = 0; i < u.length; ++i) {
+    //  ASSERT_STREQ(buffer[i], v[i]);
+    //
+    ASSERT_STREQ(buffer, buffer2);
+}// TODO: Test remaining Str functions
+
+TEST(StrImpl, str_spliceWzeroParams) {
+    Str v = Str_value(3);
+    char *buffer = (char*) v.buffer;
+    buffer[0] = 'a';
+    buffer[1] = 'b';
+    buffer[2] = 'c';
+
+    v.length = 3;
+    char items[] = {'h', 'i'};
+    Str_splice(&v, 0, 0, items, 2);
+    char *bufferAgain = (char*) v.buffer;
+    Str fin = Str_value(5);
+    char *result = (char*)fin.buffer;
+    result[0] = 'h';
+    result[1] = 'i';
+    result[2] = 'a';
+    result[3] = 'b';
+    result[4] = 'c';
+    result[5] = '\0';
+    ASSERT_STREQ(bufferAgain, result);
+}

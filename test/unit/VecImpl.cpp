@@ -66,7 +66,7 @@ TEST(VecImpl, get) {
     ASSERT_EQ(buffer[0], a);
     ASSERT_EQ(buffer[1], b);
 }
-TEST(VecImpl, set) {
+TEST(VecImpl, ArraySet) {
     Vec v = Vec_value(3, sizeof(int16_t));
     int16_t *buffer = (int16_t*) v.buffer;
     buffer[0] = 15;
@@ -78,7 +78,7 @@ TEST(VecImpl, set) {
     ASSERT_EQ(buffer[0], b);
 } 
 
-TEST(VecImpl, set2) {
+TEST(VecImpl, singleSet) {
     Vec v = Vec_value(1, sizeof(int16_t));
     ASSERT_EQ(0, v.length);
     int16_t x = 1;
@@ -96,29 +96,29 @@ TEST(VecImpl, set2) {
     TEST(VecImpl, equals) {
     Vec v = Vec_value(3, sizeof(int16_t));
     int16_t *buffer = (int16_t*) v.buffer;
-    buffer[0] = 1;
-    buffer[1] = 2;
-    buffer[2] = 3;
-    v.length = 3;
+    buffer[0] = 10;
+    buffer[1] = 20;
+    
+    v.length = 2;
     
     Vec w = Vec_value(3, sizeof(int16_t));
     int16_t *buff2 = (int16_t*) w.buffer;
-    buff2[0] = 1;
-    buff2[1] = 2;
-    buff2[2] = 3;
-    w.length = 3;
+    buff2[0] = 10;
+    buff2[1] = 20;
+    
+    w.length = 2;
     ASSERT_EQ(Vec_equals(&v, &w), true);
 
 }
 
-TEST(VecImpl, splice1) {
+TEST(VecImpl, splicewZeroParams) {
     Vec v = Vec_value(4, sizeof(int16_t));
     int16_t *buffer = (int16_t*) v.buffer;
     buffer[0] = 100;
     buffer[1] = 200;
     buffer[2] = 300;
     
-    v.length = 4;
+    v.length = 3;
     int16_t items[] = {800,900};
     Vec_splice(&v, 0, 0, items, 2);
     int16_t *bufferAgain = (int16_t*) v.buffer;
@@ -136,4 +136,26 @@ TEST(VecImpl, splice1) {
     ASSERT_EQ(bufferAgain[3], result[3]);
     ASSERT_EQ(bufferAgain[4], result[4]);
 }
+
+TEST(VecImpl, splicewDelete) {
+    Vec v = Vec_value(4, sizeof(int16_t));
+    int16_t *buffer = (int16_t*) v.buffer;
+    buffer[0] = 100;
+    buffer[1] = 200;
+    buffer[2] = 300;
+    
+    v.length = 3;
+    int16_t items[] = {800,900};
+    Vec_splice(&v, 1, 2, items, 2);
+    int16_t *bufferAgain = (int16_t*) v.buffer;
+    Vec fin = Vec_value(5, sizeof(int16_t));
+    int16_t *result = (int16_t*)fin.buffer;
+    result[0] = 100;
+    result[1] = 800;
+    result[2] = 900;
+       
+    ASSERT_EQ(bufferAgain[0], result[0]);
+    ASSERT_EQ(bufferAgain[1], result[1]);
+    ASSERT_EQ(bufferAgain[2], result[2]);
+  }
 
