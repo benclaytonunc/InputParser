@@ -100,3 +100,72 @@ TEST(StrImpl, str_spliceWzeroParams) {
     result[5] = '\0';
     ASSERT_STREQ(bufferAgain, result);
 }
+
+TEST(StrImpl, spliceWparams) {
+ 
+    Str v = Str_value(3);
+    char *buffer = (char*) v.buffer;
+    buffer[0] = 'a';
+    buffer[1] = 'b';
+    buffer[2] = 'c';
+
+    v.length = 3;
+    char items[] = {'h', 'i'};
+    Str_splice(&v, 1, 2, items, 2);
+    char *bufferAgain = (char*) v.buffer;
+    Str fin = Str_value(3);
+    char *result = (char*)fin.buffer;
+    result[0] = 'a';
+    result[1] = 'h';
+    result[2] = 'i';
+    result[3] = '\0';
+    ASSERT_STREQ(bufferAgain, result);
+}
+
+TEST(StrImpl, append) {
+    Str s = Str_value(2);
+    char *buffer = (char*) s.buffer;
+    buffer[0] = 'a';
+    buffer[1] = 'b';
+    s.length = 2;  
+    Str other = Str_value(2);
+    char *buffer2 = (char*) other.buffer;
+    buffer2[0] = 'c';
+    buffer2[1] = 'd';
+    other.length = 2;
+    Str_append(&s, buffer2);
+    char* bufferAgain = (char*) s.buffer;
+    Str result = fixture_abcd();
+    char *resultBuff = (char*) result.buffer;
+    ASSERT_STREQ(resultBuff, bufferAgain); 
+
+}
+
+TEST(StrImpl, get) {
+    Str s = Str_value(2);
+    char *buffer = (char*) s.buffer;
+    buffer[0] = 'a';
+    buffer[1] = 'b';
+    s.length = 2;
+    char get = Str_get(&s, 1);
+    ASSERT_EQ(get, buffer[1]); 
+    
+}
+
+TEST(StrImpl, set) {
+    Str s = fixture_abcd();
+    char c = 'c';
+    Str_set(&s, 1, c);
+    char *bufferAgain = (char*) s.buffer;
+    ASSERT_EQ(bufferAgain[1], c);
+}
+
+TEST(StrImpl, SetIndexIsLen) {
+    Str s = fixture_abcd();
+    char c = 'c';
+    Str_set(&s, 4, c);
+    char *bufferAgain = (char*) s.buffer;
+    ASSERT_EQ(bufferAgain[4], c);
+    char d = '\0';
+    ASSERT_EQ(bufferAgain[5], d);
+}

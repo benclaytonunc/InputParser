@@ -1,5 +1,6 @@
 #include <string.h>
-
+#include <stdlib.h>
+#include <stdio.h>
 #include "Str.h"
 #include "Vec.h"
 
@@ -57,4 +58,33 @@ void Str_splice(Str *self, size_t index, size_t delete_count, const char *cstr, 
 
     Vec_splice(self, index, delete_count, cstr, insert_count);          
     Vec_set(self, self->length, &NULL_CHAR);      
+}
+
+
+void Str_append(Str *self, const char *cstr) {
+    size_t clen = strlen(cstr);
+    Str_splice(self, self->length, 0, cstr, clen); 
+}
+
+char Str_get(const Str *self, size_t index) {
+     if (index < (self->length) || index >= 0) {
+         return *Str_ref(self, index);
+     } else {
+          fprintf(stderr, "%s:%d - Out of Bounds", __FILE__, __LINE__);
+          exit(EXIT_FAILURE);          
+     }
+}
+void Str_set(Str *self, size_t index, const char value) {
+    if (index == self->length) {
+        Str_append(self, &value);
+    }
+    if (index < self->length && index >= 0) {
+        memcpy(Vec_ref(self, index), &value, self->item_size); 
+        
+    }     
+    else {
+          fprintf(stderr, "%s:%d - Out of Bounds", __FILE__, __LINE__);
+          exit(EXIT_FAILURE);          
+     }
+
 }
