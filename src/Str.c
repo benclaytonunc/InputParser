@@ -57,7 +57,7 @@ Str Str_from(const char *cstr) {
 void Str_splice(Str *self, size_t index, size_t delete_count, const char *cstr, size_t insert_count) {   
 
     Vec_splice(self, index, delete_count, cstr, insert_count);          
-    Vec_set(self, self->length, &NULL_CHAR);      
+//    Vec_set(self, self->length, &NULL_CHAR);      
 }
 
 
