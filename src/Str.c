@@ -63,7 +63,7 @@ void Str_splice(Str *self, size_t index, size_t delete_count, const char *cstr, 
 
 void Str_append(Str *self, const char *cstr) {
     size_t clen = strlen(cstr);
-    size_t slen = self->length;
+    size_t slen = Str_length(self) + 1;
     Str_splice(self, slen, 0, cstr, clen); 
 }
 
