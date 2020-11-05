@@ -62,9 +62,19 @@ void Str_splice(Str *self, size_t index, size_t delete_count, const char *cstr, 
 
 
 void Str_append(Str *self, const char *cstr) {
-    size_t clen = strlen(cstr);
-    size_t slen = Str_length(self) + 1;
-    Str_splice(self, slen, 0, cstr, clen); 
+    //size_t clen = strlen(cstr);
+    size_t slen = Str_length(self);
+    size_t i = 0;
+    while (cstr[i] != '\0') {
+        i++;
+    }
+//    printf("clen%zu", i);
+    //  self->length += clen;
+//    self->capacity += (clen * sizeof(char));
+    self->length += i;
+    memcpy(Vec_ref(self, slen), cstr, i * sizeof(char));
+    
+    //Vec_splice(self, slen, 0, cstr, i); 
 }
 
 char Str_get(const Str *self, size_t index) {
