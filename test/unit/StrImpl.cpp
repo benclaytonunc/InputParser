@@ -65,19 +65,107 @@ TEST(StrImpl, ref) {
     Str_drop(&s);
 }
 
-TEST(StrImpl, fromTest) {
-    //const char *t[] = {"a","b","c","d"};
+TEST(StrImpl, fromWrongInputTest) {
+   Str v = fixture_abcd();
+    Str u = Str_from("abcde"); 
+    char *buffer = (char*) u.buffer;
+    char *buffer2 = (char*) v.buffer;
+    ASSERT_NE(buffer, buffer2);
 
-    //char v[] = "abcd";
-    Str v = fixture_abcd();
+}// TODO: Test remaining Str functions
+
+
+TEST(StrImpl, fromTest) {
+   Str v = fixture_abcd();
     Str u = Str_from("abcd"); 
     char *buffer = (char*) u.buffer;
     char *buffer2 = (char*) v.buffer;
-    //for (size_t i = 0; i < u.length; ++i) {
-    //  ASSERT_STREQ(buffer[i], v[i]);
-    //
     ASSERT_STREQ(buffer, buffer2);
-}// TODO: Test remaining Str functions
+}
+
+TEST(StrGrader, splice_switch)
+{
+    Str str = Str_from("dadand");
+    const char *insert = "mom";
+    Str_splice(&str, 0, 0, insert, strlen(insert));
+
+    const char *expected = "momdadand";
+    ASSERT_STREQ(expected, Str_cstr(&str));
+    ASSERT_EQ(strlen(expected), Str_length(&str));
+    Str_drop(&str);
+}
+
+TEST(StrGrader, splice_append1)
+{
+    Str str = Str_from("before&");
+    const char *insert = "after";
+    Str_splice(&str, 7, 0, insert, strlen(insert));
+
+    const char *expected = "before&after";
+    ASSERT_STREQ(expected, Str_cstr(&str));
+    ASSERT_EQ(strlen(expected), Str_length(&str));
+    Str_drop(&str);
+}
+
+TEST(StrGrader, splice_insertInMiddle)
+{
+    Str str = Str_from("abcdcba");
+    const char *insert = "1234";
+    Str_splice(&str, 3, 0, insert, strlen(insert));
+
+    const char *expected = "abc1234dcba";
+    ASSERT_STREQ(expected, Str_cstr(&str));
+    ASSERT_EQ(strlen(expected), Str_length(&str));
+    Str_drop(&str);
+}
+
+TEST(StrGrader, splice_delete2)
+{
+    Str str = Str_from("1234567");
+    Str_splice(&str, 3, 2, NULL, 0);
+
+    const char *expected = "12367";
+    ASSERT_STREQ(expected, Str_cstr(&str));
+    ASSERT_EQ(strlen(expected), Str_length(&str));
+    Str_drop(&str);
+}
+
+TEST(StrGrader, splice_replace_eqLen)
+{
+    Str str = Str_from("1234567");
+    const char *insert = "bob";
+    Str_splice(&str, 2, 3, insert, strlen(insert));
+
+    const char *expected = "12bob67";
+    ASSERT_STREQ(expected, Str_cstr(&str));
+    ASSERT_EQ(strlen(expected), Str_length(&str));
+    Str_drop(&str);
+}
+
+TEST(StrGrader, splice_replace_longerLen)
+{
+    Str str = Str_from("1234567");
+    const char *insert = "job";
+    Str_splice(&str, 2, 4, insert, strlen(insert));
+
+    const char *expected = "12job7";
+    ASSERT_STREQ(expected, Str_cstr(&str));
+    ASSERT_EQ(strlen(expected), Str_length(&str));
+    Str_drop(&str);
+}
+
+TEST(StrGrader, splice_replace_longerIns)
+{
+    Str str = Str_from("1234567");
+    const char *insert = "tot";
+    Str_splice(&str, 2, 1, insert, strlen(insert));
+
+    const char *expected = "12tot4567";
+    ASSERT_STREQ(expected, Str_cstr(&str));
+    ASSERT_EQ(strlen(expected), Str_length(&str));
+    Str_drop(&str);
+}
+
 
 TEST(StrImpl, str_spliceWzeroParams) {
     Str v = Str_value(3);
@@ -134,15 +222,48 @@ TEST(StrImpl, append) {
 
 }
 
-TEST(StrImpl, get) {
+TEST(StrImpl, getMultiple) {
     Str s = Str_value(2);
     char *buffer = (char*) s.buffer;
     buffer[0] = 'a';
     buffer[1] = 'b';
     s.length = 2;
     char get = Str_get(&s, 1);
+    char get0 = Str_get(&s, 0);
     ASSERT_EQ(get, buffer[1]); 
-    
+    ASSERT_EQ(get0, buffer[0]); 
+}
+
+TEST(StrImpl, getSingle) {
+    Str s = Str_value(2);
+    char *buffer = (char*) s.buffer;
+    buffer[0] = 'a';
+    s.length = 1;
+    char get = Str_get(&s, 0);
+    ASSERT_EQ(get, buffer[0]);  
+}
+
+TEST(StrImpl, getOverBounds) {
+    Str s = Str_value(2);
+    char *buffer = (char*) s.buffer;
+    buffer[0] = 'a';
+    buffer[1] = 'b';
+    s.length = 2;
+    ASSERT_DEATH({ Str_ref(&s, 3);
+    }, ".* - Out of Bounds");
+     
+}
+
+
+TEST(StrImpl, getNegativeBounds) {
+    Str s = Str_value(2);
+    char *buffer = (char*) s.buffer;
+    buffer[0] = 'a';
+    buffer[1] = 'b';
+    s.length = 2;
+    ASSERT_DEATH({ Str_ref(&s, -1);
+    }, ".* - Out of Bounds");
+     
 }
 
 TEST(StrImpl, set) {
@@ -151,6 +272,24 @@ TEST(StrImpl, set) {
     Str_set(&s, 1, c);
     char *bufferAgain = (char*) s.buffer;
     ASSERT_EQ(bufferAgain[1], c);
+}
+
+TEST(StrImpl, setOverBounds) {
+    Str s = fixture_abcd();
+    char c = 'c';
+    //char *bufferAgain = (char*) s.buffer;
+    ASSERT_DEATH({ Str_set(&s, 6, c);
+    }, ".* - Out of Bounds");
+     
+}
+
+TEST(StrImpl, setNegativeBounds) {
+    Str s = fixture_abcd();
+    char c = 'c';
+    //char *bufferAgain = (char*) s.buffer;
+    ASSERT_DEATH({ Str_set(&s, -1, c);
+    }, ".* - Out of Bounds");
+     
 }
 
 TEST(StrImpl, SetIndexIsLen) {

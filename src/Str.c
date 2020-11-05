@@ -38,17 +38,8 @@ char* Str_ref(const Str *self, const size_t index)
     return (char*) Vec_ref(self, index);
 }
 Str Str_from(const char *cstr) {
-   //char* newStr = malloc(sizeof(cstr));
-   //Str s = Str_value(sizeof(cstr));
-   /*int i = 0;   
-   while (cstr != '\0') {
-       s.buffer += cstr[i];
-       cstr++;
-       i++;
-   }
-   */
    size_t b = strlen(cstr);
-    Str s = Str_value(b+1);
+   Str s = Str_value(b+1);
    Vec_splice(&s, 0, 0, cstr, b);  
    //memcpy(Str_ref(s, 0), (const void *)cstr, sizeof(cstr));
    return s;
@@ -68,9 +59,6 @@ void Str_append(Str *self, const char *cstr) {
     while (cstr[i] != '\0') {
         i++;
     }
-//    printf("clen%zu", i);
-    //  self->length += clen;
-//    self->capacity += (clen * sizeof(char));
     self->length += i;
     memcpy(Vec_ref(self, slen), cstr, i * sizeof(char));
     
