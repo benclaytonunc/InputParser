@@ -123,21 +123,14 @@ TEST(StrImpl, spliceWparams) {
 }
 
 TEST(StrImpl, append) {
-    Str s = Str_value(2);
-    char *buffer = (char*) s.buffer;
-    buffer[0] = 'a';
-    buffer[1] = 'b';
-    s.length = 2;  
-    Str other = Str_value(2);
-    char *buffer2 = (char*) other.buffer;
-    buffer2[0] = 'c';
-    buffer2[1] = 'd';
-    other.length = 2;
-    Str_append(&s, buffer2);
-    char* bufferAgain = (char*) s.buffer;
-    Str result = fixture_abcd();
-    char *resultBuff = (char*) result.buffer;
-    ASSERT_STREQ(resultBuff, bufferAgain); 
+    Str s = Str_from("abcde");
+    const char *append = "123";
+    Str_append(&s, append);
+    
+    const char *expected = "abcde123";
+    ASSERT_STREQ(expected, Str_cstr(&s));
+    ASSERT_EQ(strlen(expected),Str_length(&s));
+    Str_drop(&s); 
 
 }
 

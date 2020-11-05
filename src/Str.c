@@ -87,7 +87,7 @@ char Str_get(const Str *self, size_t index) {
 }
 void Str_set(Str *self, size_t index, const char value) {
     if (index == self->length) {
-        Str_append(self, &value);
+        Vec_splice(self, index, 0, &value, 1);
     }
     if (index < self->length && index >= 0) {
         memcpy(Vec_ref(self, index), &value, self->item_size); 
