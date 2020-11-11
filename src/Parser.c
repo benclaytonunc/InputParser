@@ -25,31 +25,22 @@ static Node* parse_end() {
     return endNode; 
 }
 static Node* parse_command(Scanner *scanner) {
-    //Node *commandNode = CommandNode_new(scanner->next.lexeme); 
-    // StrVec_set(&commandNode->data.command, 0, scanner->next.lexeme);
-    
-    //StrVec_set(&left->data.command, 0, scanner->next.lexeme);
-    size_t i = 1;
+   
     StrVec s = StrVec_value(6);
-    printf("before while \n");
+//    printf("before while \n");
     while (Scanner_has_next(scanner)) {
         Token g = Scanner_next(scanner);
         
         if (g.type == WORD_TOKEN) {
            StrVec_push(&s, g.lexeme);
-            printf("count: %lu \n", i);
- 
-           //StrVec_set(&left->data.command, i, g.lexeme);
-            //left = CommandNode_new(scanner->next.lexeme);  
+            //printf("count: %lu \n", i); 
         } else if (g.type == PIPE_TOKEN) {
-     //       StrVec pipe = Str_from("|");
-//            StrVec_set(&left->data.command, i, Str_from("|")); 
             Node *left = CommandNode_new(s);
             return parse_pipe(scanner, left); 
         } 
-        i++;
+        
     }
-    printf("after while \n");
+    //printf("after while \n");
  
     Node *output = CommandNode_new(s);
     return output;
@@ -77,7 +68,7 @@ static Node* parse_pipe(Scanner *scanner, Node * left) {
     Node *right = parse_command(scanner);
     Node *pipeNode = PipeNode_new(left, right);
     pipeNode->type = PIPE_NODE; 
-    printf("past declaration \n");
+    //printf("past declaration \n");
     //StrVec pipe = Str_from("|");
     return pipeNode;
 }
