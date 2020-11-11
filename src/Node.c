@@ -31,7 +31,12 @@ Node* PipeNode_new(Node *left, Node *right)
 
 void* Node_drop(Node *self)
 {
+    if (self->type == PIPE_NODE) {
+        StrVec *left = (&self->data.pipe.left->data.command);
+        StrVec_drop(left);
+       StrVec *right = (&self->data.pipe.right->data.command); 
+        StrVec_drop(right);
+    }
     StrVec_drop(&self->data.command);
-    free(self);
     return NULL;
 }
