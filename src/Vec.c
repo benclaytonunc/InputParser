@@ -8,6 +8,8 @@
 
 /* Constructor / Destructor */
 
+void* new_ref(const Vec *self, size_t index);
+
 Vec Vec_value(size_t capacity, size_t item_size)
 {
     Vec vec = {
@@ -68,11 +70,14 @@ void Vec_set(Vec *self, size_t index, const void *value) {
         self->length = index + 1;
     }
     if (index <= self->length && index >= 0) {
+//        Vec_splice(self, index, 0, value, strlen(value));
         memcpy(Vec_ref(self,index),value, (self->item_size));
     } else {
         fprintf(stderr, "%s:%d - Out of Bounds", __FILE__, __LINE__);
         exit(EXIT_FAILURE);
     } 
+
+
 }
 
 bool Vec_equals(const Vec *self, const Vec *other) {

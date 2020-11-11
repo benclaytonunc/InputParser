@@ -48,11 +48,6 @@ static Token token_parser(CharItr *char_itr);
             }
        }
         if (peekVal == '|') {     
-           
-            // Str s = Str_value(sizeof(char));
-           /* while(CharItr_has_next(char_itr)){  
-               CharItr_next(char_itr);
-           }*/ 
            Token nextTok = {PIPE_TOKEN, Str_from("|")}; 
            CharItr_next(char_itr); 
            while(CharItr_has_next(char_itr) && ((CharItr_peek(char_itr) == ' ') || (CharItr_peek(char_itr) == '\t'))) {
@@ -70,9 +65,7 @@ static Token token_parser(CharItr *char_itr);
            while(CharItr_has_next(char_itr) && (CharItr_peek(char_itr) != ' ')){ 
                    c = CharItr_next(char_itr);
                     Str_set(&s, count, c);    
-                    count++;
-            
-                
+                    count++;     
            }
            while(CharItr_has_next(char_itr) && ((CharItr_peek(char_itr) == ' ') || (CharItr_peek(char_itr) == '\t'))) {
                 CharItr_next(char_itr);
@@ -84,7 +77,7 @@ static Token token_parser(CharItr *char_itr);
      
     } else { 
             Token nextTok = {END_TOKEN, Str_from("")};
-            //Str_drop(&nextTok.lexeme);
+            Str_drop(&nextTok.lexeme);
             return nextTok;
     }
  
@@ -95,33 +88,7 @@ static Token token_parser(CharItr *char_itr);
     Token Scanner_next(Scanner *self) { 
         Token t = self->next;
         self->next = token_parser(&self->char_itr);     
-          
-        /*if (self->next.type == END_TOKEN) {
-                Str_drop(&self->next.lexeme);
-                return self->next;
-         */        
-        return t;              
+        //Str_drop(&self->next.lexeme);
+        return t;               
     }
-/*
-    static void NextChar(Scanner *self) {
 
-        while (CharItr_has_next(&self->char_itr)) { 
-            self->char_itr.cursor++;
-            //printf("%d", count); 
-        }
-        Scanner_next(self); 
-    }
-     static void parse(Scanner *self) {
-
-        switch (self->next.type) {
-            case WORD_TOKEN:
-                NextChar(self);
-            case PIPE_TOKEN:
-                NextChar(self);
-            case END_TOKEN:
-                Scanner_next(self);
-        } 
-
-    }
-    */
- 

@@ -68,11 +68,7 @@ void Str_splice(
  */
 void Str_append(Str *self, const char *cstr);
 
-/**
- * Get a character at a specific index of the Str.
- */
-char Str_get(const Str *self, size_t index);
-
+/** * Get a character at a specific index of the Str.  */ char Str_get(const Str *self, size_t index); 
 /**
  * Set a character at a specific index of the Str. If the index
  * is the length of the Str, it will append the character to the
