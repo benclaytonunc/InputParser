@@ -31,12 +31,12 @@ Node* PipeNode_new(Node *left, Node *right)
 
 void* Node_drop(Node *self)
 {
-//    if (self->type == PIPE_NODE) {
-   // Str *left = (&self->data.pipe.left->data.command);
-    //Str_drop(left);
-    //Str *right = (&self->data.pipe.right->data.command); 
-    //Str_drop(right);
-    
+    if (self->type == PIPE_NODE) {
+     Str *left = (&self->data.pipe.left->data.command);
+     Str_drop(left);
+     Str *right = (&self->data.pipe.right->data.command); 
+     Str_drop(right);
+    } 
     Str_drop(&self->data.command);
     return NULL;
 }
